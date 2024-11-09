@@ -1,17 +1,42 @@
-# Wait until the AD services are fully started
+# Várakozás az AD szolgáltatások teljes indításáig
 Start-Sleep -Seconds 30
 
-# Import AD module
+# AD modul importálása
 Import-Module ActiveDirectory
 
-# Example: Creating a new group
-New-ADGroup -Name "ITAdmins" -SamAccountName "ITAdmins" -GroupScope Global -GroupCategory Security
+# Példa Organizational Units (OU) létrehozása a CodeTechSolutions struktúrával
+$ouBasePath = "OU=CodeTech,DC=CodeTechSolutions,DC=local"
+$ouSocPath = "OU=SOC,$ouBasePath"
+$ouHrPath = "OU=HR,$ouBasePath"
 
-# Example: Creating a new user
-$UserPassword = (ConvertTo-SecureString -AsPlainText "UserPassword1" -Force)
-New-ADUser -Name "John Doe" -SamAccountName "jdoe" -UserPrincipalName "jdoe@$domainName" -AccountPassword $UserPassword -Enabled $true
+# CodeTechTeams OU és al-OU-k létrehozása
+New-ADOrganizationalUnit -Name "CodeTech" -Path "DC=CodeTechSolutions,DC=local" -ProtectedFromAccidentalDeletion $false -ErrorAction SilentlyContinue
+New-ADOrganizationalUnit -Name "SOC" -Path $ouBasePath -ProtectedFromAccidentalDeletion $false -ErrorAction SilentlyContinue
+New-ADOrganizationalUnit -Name "HR" -Path $ouBasePath -ProtectedFromAccidentalDeletion $false -ErrorAction SilentlyContinue
 
-# Additional user/group creation commands can be added here
+# SOC és HR csoportok létrehozása a CodeTechTeams struktúrában
+New-ADGroup -Name "SOC" -SamAccountName "SOC" -GroupScope Global -GroupCategory Security -Path $ouSocPath
+New-ADGroup -Name "HR" -SamAccountName "HR" -GroupScope Global -GroupCategory Security -Path $ouHrPath
 
-# Remove the scheduled task after it completes
+# John Doe felhasználó létrehozása SOC csapatban
+$UserPassword = ConvertTo-SecureString -AsPlainText "UserPassword1" -Force
+New-ADUser -Name "John Doe" `
+            -SamAccountName "john.doe" `
+            -UserPrincipalName "john.doe@codetechsolutions.com" `
+            -AccountPassword $UserPassword `
+            -Enabled $true `
+            -Path $ouSocPath
+Add-ADGroupMember -Identity "SOC" -Members "john.doe"
+
+# Marie Curie felhasználó létrehozása HR csapatban
+$UserPasswordMarie = ConvertTo-SecureString -AsPlainText "UserPassword2" -Force
+New-ADUser -Name "Marie Curie" `
+            -SamAccountName "marie.curie" `
+            -UserPrincipalName "marie.curie@codetechsolutions.com" `
+            -AccountPassword $UserPasswordMarie `
+            -Enabled $true `
+            -Path $ouHrPath
+Add-ADGroupMember -Identity "HR" -Members "marie.curie"
+
+# Ütemezett feladat eltávolítása a script futtatása után
 Unregister-ScheduledTask -TaskName "PostADSetup" -Confirm:$false
