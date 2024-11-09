@@ -24,6 +24,7 @@ New-ADUser -Name "John Doe" `
             -SamAccountName "john.doe" `
             -UserPrincipalName "john.doe@codetechsolutions.com" `
             -AccountPassword $UserPassword `
+            -Description "PW: UserPassword1" `
             -Enabled $true `
             -Path $ouSocPath
 Add-ADGroupMember -Identity "SOC" -Members "john.doe"
@@ -34,6 +35,7 @@ New-ADUser -Name "Marie Curie" `
             -SamAccountName "marie.curie" `
             -UserPrincipalName "marie.curie@codetechsolutions.com" `
             -AccountPassword $UserPasswordMarie `
+            -Description "PW: UserPassword2" `
             -Enabled $true `
             -Path $ouHrPath
 Add-ADGroupMember -Identity "HR" -Members "marie.curie"
