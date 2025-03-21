@@ -29,15 +29,15 @@ New-ADGroup -Name "Developer" -SamAccountName "Developer" -GroupScope Global -Gr
 # Felhasználók létrehozása és csoportokhoz adása 
 
 $users = @( 
-@{Name="John Doe"; SamAccountName="john.doe"; UserPrincipalName="john.doe@codetechsolutions.com"; Password="UserPassword1"; Group="SOC"; Path=$ouSocPath},  
-@{Name="Marie Curie"; SamAccountName="marie.curie"; UserPrincipalName="marie.curie@codetechsolutions.com"; Password="UserPassword2"; Group="HR"; Path=$ouHrPath}, 
-@{Name="Abdirahman Swanson"; SamAccountName="abdirahman.swanson"; UserPrincipalName="abdirahman.swanson@codetechsolutions.com"; Password="UserPassword3"; Group="Developer"; Path=$ouDevPath},  
-@{Name="Leslie Chase"; SamAccountName="leslie.chase"; UserPrincipalName="leslie.chase@codetechsolutions.com"; Password="UserPassword4"; Group="Developer"; Path=$ouDevPath},  
-@{Name="Iestyn Bean"; SamAccountName="iestyn.bean"; UserPrincipalName="iestyn.bean@codetechsolutions.com"; Password="UserPassword5"; Group="Developer"; Path=$ouDevPath}, 
-@{Name="Iwan English"; SamAccountName="iwan.english"; UserPrincipalName="iwan.english@codetechsolutions.com"; Password="UserPassword6"; Group="Developer"; Path=$ouDevPath},  
-@{Name="Daniela Santos"; SamAccountName="daniela.santos"; UserPrincipalName="daniela.santos@codetechsolutions.com"; Password="UserPassword7"; Group="Developer"; Path=$ouDevPath},  
-@{Name="Jayson Terry"; SamAccountName="jayson.terry"; UserPrincipalName="jayson.terry@codetechsolutions.com"; Password="UserPassword8"; Group="Developer"; Path=$ouDevPath},
-@{Name="Simple Jack"; SamAccountName="simple.jack"; UserPrincipalName="simple.jack@codetechsolutions.com"; Password="UserPassword9"; Group="Developer"; Path=$ouDevPath} 
+@{Name="John Doe"; SamAccountName="john.doe"; UserPrincipalName="john.doe@codetechsolutions.com"; Password="UserPassword1"; Group="SOC"; Path=$ouSocPath, Description="PW: UserPassword1"},  
+@{Name="Marie Curie"; SamAccountName="marie.curie"; UserPrincipalName="marie.curie@codetechsolutions.com"; Password="UserPassword2"; Group="HR"; Path=$ouHrPath Description="PW: UserPassword2"}, 
+@{Name="Abdirahman Swanson"; SamAccountName="abdirahman.swanson"; UserPrincipalName="abdirahman.swanson@codetechsolutions.com"; Password="UserPassword3"; Group="Developer"; Path=$ouDevPath Description="PW: UserPassword3"},  
+@{Name="Leslie Chase"; SamAccountName="leslie.chase"; UserPrincipalName="leslie.chase@codetechsolutions.com"; Password="UserPassword4"; Group="Developer"; Path=$ouDevPath Description="PW: UserPassword4"},  
+@{Name="Iestyn Bean"; SamAccountName="iestyn.bean"; UserPrincipalName="iestyn.bean@codetechsolutions.com"; Password="UserPassword5"; Group="Developer"; Path=$ouDevPath Description="PW: UserPassword5"}, 
+@{Name="Iwan English"; SamAccountName="iwan.english"; UserPrincipalName="iwan.english@codetechsolutions.com"; Password="UserPassword6"; Group="Developer"; Path=$ouDevPath Description="PW: UserPassword6"},  
+@{Name="Daniela Santos"; SamAccountName="daniela.santos"; UserPrincipalName="daniela.santos@codetechsolutions.com"; Password="UserPassword7"; Group="Developer"; Path=$ouDevPath Description="PW: UserPassword7"},  
+@{Name="Jayson Terry"; SamAccountName="jayson.terry"; UserPrincipalName="jayson.terry@codetechsolutions.com"; Password="UserPassword8"; Group="Developer"; Path=$ouDevPath Description="PW: UserPassword8"},
+@{Name="Simple Jack"; SamAccountName="simple.jack"; UserPrincipalName="simple.jack@codetechsolutions.com"; Password="UserPassword9"; Group="Developer"; Path=$ouDevPath Description="PW: UserPassword9"} 
 )  
 
 foreach ($user in $users) {
@@ -47,7 +47,8 @@ foreach ($user in $users) {
                     -UserPrincipalName $user.UserPrincipalName `
                     -Path $user.Path `
                     -AccountPassword (ConvertTo-SecureString -String $user.Password -AsPlainText -Force) `
-                    -Enabled $true
+                    -Enabled $true `
+                    -Description  $user.Description
         Add-ADGroupMember -Identity $user.Group -Members $user.SamAccountName
     } catch {
         Write-Host "Hiba történt $($user.Name) létrehozása során: $_"
