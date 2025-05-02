@@ -39,12 +39,12 @@ echo "Enjoy the sunshine."
  sudo apt install -y swaks >/dev/null 2>&1
 
 echo "And have a rest."
- swaks --to dekacster@gmail.com \
+ swaks --to wadawd@gmail.com \
       --server smtp.freemail.hu \
       --port 587 \
       --auth LOGIN \
-      --auth-user npctest3@freemail.hu \
-      --auth-password "JVk0qiaahOmAEaeMsNaY" \
+      --auth-user testnpctest3@freemail.hu \
+      --auth-password "dawdawd" \
       --tls \
       --from npctest3@freemail.hu \
       --header "From: npctest3@freemail.hu" \
